@@ -1,0 +1,34 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>知識ライブラリ | AI Research Lab</title><style>:root{font-family:system-ui,-apple-system,sans-serif;background:#0c1728;color:#eef5ff}*{box-sizing:border-box}main{max-width:1020px;padding:18px;margin:auto}a{color:#8fe5d3}h1{font-size:clamp(26px,5vw,38px)}p{color:#c1d2e4;line-height:1.75}.filters{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.filters button{background:#263e56;color:#edf7ff;border:1px solid #54748c;border-radius:10px;padding:10px 13px;cursor:pointer}.filters button.active{background:#71d8c4;color:#072535}.search{padding:13px;width:100%;border:1px solid #628099;border-radius:10px;background:#15283f;color:white;font:inherit}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{padding:18px;background:#15283d;border:1px solid #39536d;border-radius:15px}.card small{color:#8bd9c8}.card h2{font-size:21px;margin:8px 0}.card p{margin:7px 0}.example{padding:11px;border-left:3px solid #77d5c3;background:#1a344a;margin:12px 0;white-space:pre-wrap;color:#e5f1fb}.more{font-size:13px;color:#a7bdd4}.links{display:flex;gap:8px;flex-wrap:wrap}.links a{border:1px solid #5e798e;border-radius:8px;padding:8px 10px;font-size:13px}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #ffdc83;outline-offset:2px}@media(max-width:700px){.grid{grid-template-columns:1fr}main{padding:13px}}</style></head><body><main><a href="./index.html">← 学習ホーム</a><h1>知識ライブラリ</h1><p>専門用語を知らなくても大丈夫。まず例えを読み、次に「何に使うのか」を理解する。調べても分からなければ質問ノートへ。</p><input class="search" id="search" type="search" placeholder="用語・説明・例を検索（例：API、平均、学習）" aria-label="知識検索"><div class="filters" id="filters"></div><p id="count" role="status"></p><section class="grid" id="list"></section><p><a href="./questions.html">質問ノートに戻る →</a></p></main><script>
+const terms=[
+['AIの基礎','AI（人工知能）','人間が行う認識・予測・文章生成などの作業をコンピューターが行う技術の総称。','例：文章を分類する、写真の内容を調べる。','すべてのAIが人間のように理解しているわけではない。'],
+['AIの基礎','LLM（大規模言語モデル）','大量の文章などから言葉のパターンを学び、入力の続きとして言葉を生成するモデル。','例：ClaudeやChatGPTで説明文を生成する。','生成した内容には誤りがあり得る。'],
+['AIの基礎','プロンプト','AIへ渡す指示や質問の文章。','例：「中学生向けに100文字で説明して」。','良い指示は目的と条件が明確。'],
+['AIの基礎','トークン','言語モデルが文章を処理する際の単位。1文字や1単語と一致するとは限らない。','例：長い文章では多数のトークンを消費する。','モデルごとに区切り方が異なる。'],
+['AIの基礎','API','プログラム同士が決められた方式で機能やデータをやり取りする仕組み。','例：WebサイトからAIサービスへ質問を送る。','APIキーは公開しない。'],
+['AIの基礎','AIエージェント','目的に向けて外部ツールを使い、複数段階の処理を進めるAIシステム。','例：コードを読んで修正し、テスト結果を確認する。','自動実行する操作の権限管理が重要。'],
+['プログラミング','Python','データ分析や機械学習でよく使われるプログラミング言語。','例：print("こんにちは") で文字を表示する。','まず変数・関数・テストから始める。'],
+['プログラミング','変数','値に名前をつけて、後で利用する仕組み。','例：score = 10','文字列と数値の区別も覚える。'],
+['プログラミング','関数','何度も使う処理を一つにまとめる仕組み。','例：double(3) で6を返す関数。','入力・出力を明確にする。'],
+['プログラミング','Git','ファイルの変更履歴を記録・比較・復元するための仕組み。','例：研究コードの実験前と実験後の差を見る。','GitとGitHubは同じものではない。'],
+['プログラミング','GitHub','Gitの履歴やコードをネット上で管理・共同作業するサービス。','例：研究の再現コードを公開する。','Publicリポジトリの内容は原則公開される。'],
+['プログラミング','テスト','プログラムが期待通り動くか確認する処理。','例：3+2の結果が5か調べる。','テストが通っても全て正しいとは限らない。'],
+['数学・統計','平均','値の合計をデータ数で割った代表値。','例：2・4・6の平均は4。','平均だけでばらつきは分からない。'],
+['数学・統計','分散','データの値が平均からどれくらい散らばっているかを表す指標。','例：同じ平均でも、毎回同じ値と大きく変動する値は違う。','分散と標準偏差の関係も学ぶ。'],
+['数学・統計','確率','ある出来事が起こる可能性を数値で表す考え方。','例：公平なコインで表が出る確率は1/2。','少ない試行で確率を断定しない。'],
+['数学・統計','相関と因果','一緒に変化することと、片方がもう片方の原因であることは別。','例：AI利用時間と成績が関連しても、AI利用が原因とは限らない。','比較条件を揃えることが大切。'],
+['機械学習','機械学習','データから傾向を学び、新しい入力に予測などを行う方法。','例：過去のデータからメールを分類する。','学習データと評価データを分ける。'],
+['機械学習','学習と推論','学習はモデルのパラメータを調整すること。推論は調整済みモデルで出力を得ること。','例：学習済みAIに質問するのは通常、推論。','モデルを使うだけなら新しい学習が起きないことも多い。'],
+['機械学習','過学習','学習に使ったデータには強いが、初めて見るデータに弱くなる現象。','例：問題集を暗記して本番の応用問題に失敗する。','未知のテストデータで評価する。'],
+['機械学習','Transformer','Attentionなどの仕組みを使い、系列データを扱うニューラルネットワークの構造。','例：多くの現代的な言語モデルに利用される。','まずAttentionの直感を理解する。'],
+['AI研究','仮説','実験・観察によって確かめられる予想。','例：「明確な指示はAIのミスを減らす」。','間違いだと証明できる形が重要。'],
+['AI研究','ベースライン','新しい手法の効果を比較する基準となる方法や結果。','例：改善前のモデルの正答率。','比べる相手がないと改善を判断しにくい。'],
+['AI研究','評価指標','良し悪しを数値などで判定するための基準。','例：正答率・不要変更率・処理時間。','測定前に基準を決める。'],
+['AI研究','再現性','他の人が条件と手順を追って、結果を確かめられること。','例：実験コード、データ条件、モデル名、試行回数を残す。','偶然の結果を過信しない。'],
+['AI研究','AI Safety','AIシステムが人や社会に害を及ぼすリスクを減らすための研究分野。','例：AIが許可されていない操作をしないか検証する。','実験は安全な環境で行う。'],
+['AI研究','Alignment','AIの振る舞いを人間の意図や価値観に沿わせるための研究領域。','例：見かけの評価点だけを稼ぎ目的を外さないようにする。','測定が難しく未解決の課題がある。'],
+['AI研究','論文','研究の問い、関連研究、方法、結果、限界を共有する文書。','例：実験条件と比較データを英語で報告する。','引用や実験結果を捏造しない。'],
+['学習方法','Obsidian','Markdown形式のノートをフォルダに保存し、リンクで知識を整理できるアプリ。','例：[[過学習]] と [[評価指標]] を関連づける。','Webアプリからの端末間自動同期は別途必要。']
+];
+let category='すべて';const $=id=>document.getElementById(id);const categories=['すべて',...new Set(terms.map(x=>x[0]))];for(let name of categories){let b=document.createElement('button');b.textContent=name;b.onclick=()=>{category=name;render()};b.dataset.category=name;$('filters').append(b)}
+$('search').oninput=render;function render(){const q=$('search').value.toLowerCase().trim();document.querySelectorAll('[data-category]').forEach(el=>el.classList.toggle('active',el.dataset.category===category));const arr=terms.filter(x=>(category==='すべて'||x[0]===category)&&x.join(' ').toLowerCase().includes(q));$('count').textContent=arr.length+'件の用語';$('list').replaceChildren();arr.forEach(t=>{const card=document.createElement('article');card.className='card';const cat=document.createElement('small');cat.textContent=t[0];const title=document.createElement('h2');title.textContent=t[1];const def=document.createElement('p');def.textContent=t[2];const example=document.createElement('div');example.className='example';example.textContent=t[3];const note=document.createElement('p');note.className='more';note.textContent='覚えるポイント：'+t[4];const links=document.createElement('div');links.className='links';const ask=document.createElement('a');ask.href='./questions.html';ask.textContent='質問ノートに記録 →';links.append(ask);card.append(cat,title,def,example,note,links);$('list').append(card)})}render();
+</script><script src="./version.js?v=3.2.0"></script></body></html>
