@@ -1,7 +1,7 @@
 (function(){
 'use strict';
 var items=[
-{group:'学習する',links:[['ホーム','index.html','⌂'],['20ステップ入門','intro.html','▤'],['体系学習コース','course.html','▧']]},
+{group:'学習する',links:[['ホーム','index.html','⌂'],['20ステップ入門','intro.html','▤'],['体系学習コース','course.html','▧'],['英語学習ルーム','english.html','EN']]},
 {group:'調べる・質問する',links:[['知識ライブラリ','knowledge.html','▦'],['質問ノート','questions.html','?']]},
 {group:'研究・記録',links:[['研究ワーク','research.html','⚗'],['Obsidian連携','notes.html','◇']]}
 ];
