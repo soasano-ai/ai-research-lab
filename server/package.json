@@ -1,0 +1,12 @@
+{
+  "name": "ai-research-lab-gateway",
+  "version": "3.5.0",
+  "private": true,
+  "description": "Server-side AI API gateway for AI Research Lab",
+  "scripts": {
+    "start": "node index.cjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
